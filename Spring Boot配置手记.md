@@ -94,3 +94,32 @@ java -Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=8000,suspend=n \
 
 [Remote debug tunnel](https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#using-boot-devtools-remote-debugtunnel)
 
+## spring boot 配置说明
+https://docs.spring.io/spring-boot/docs/current/reference/htmlsingle/#boot-features-external-config
+
+
+##  Custom JSON Serializers and Deserializers
+```java
+
+import java.io.*;
+import com.fasterxml.jackson.core.*;
+import com.fasterxml.jackson.databind.*;
+import org.springframework.boot.jackson.*;
+
+@JsonComponent
+public class Example {
+
+    public static class Serializer extends JsonSerializer<SomeObject> {
+        // ...
+    }
+
+    public static class Deserializer extends JsonDeserializer<SomeObject> {
+        // ...
+    }
+
+}
+```
+
+1. spring默认使用jackson 来进行JSON处理`@JsonComponent`的类.
+
+
