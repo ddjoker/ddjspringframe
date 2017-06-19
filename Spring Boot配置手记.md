@@ -123,3 +123,48 @@ public class Example {
 1. spring默认使用jackson 来进行JSON处理`@JsonComponent`的类.
 
 
+## MessageCodesResolver
+
+1. `spring.mvc.message-codes-resolver.format.PREFIX_ERROR_CODE`
+2. `DefaultMessageCodesResolver.Format.POSTFIX_ERROR_CODE`
+
+##  Static Content
+
+```properties
+spring.mvc.static-path-pattern=/resources/**
+```
+
+To use cache busting, the following configuration will configure a cache
+busting solution for all static resources, effectively adding a content
+hash in URLs, such as `<link
+href="/css/spring-2a2d595e6ed9a0b24f027f2b63b134d6.css"/>`:
+
+```properties
+    spring.resources.chain.strategy.content.enabled=true
+    spring.resources.chain.strategy.content.paths=/**
+```
+When loading resources dynamically with, for example, a JavaScript module loader, renaming files is not an option. That’s why other strategies are also supported and can be combined. A "fixed" strategy will add a static version string in the URL, without changing the file name:
+
+```properties
+    spring.resources.chain.strategy.content.enabled=true
+    spring.resources.chain.strategy.content.paths=/**
+    spring.resources.chain.strategy.fixed.enabled=true
+    spring.resources.chain.strategy.fixed.paths=/js/lib/
+    spring.resources.chain.strategy.fixed.version=v12
+```
+With this configuration, JavaScript modules located under` "/js/lib/" `will use a fixed versioning strategy `"/v12/js/lib/mymodule.js"` while other resources will still use the content one `<link href="/css/spring-2a2d595e6ed9a0b24f027f2b63b134d6.css"/>`.
+
+## ConfigurableWebBindingInitializer
+
+Spring MVC uses a `WebBindingInitializer` to initialize a `WebDataBinder` for a particular request. If you create your own `ConfigurableWebBindingInitializer` `@Bean`, Spring Boot will automatically configure Spring MVC to use it.
+
+##  Error Handling
+
+1. 默认的 Spring boot 提供一个`/error`
+   用于获取所有全局的错误信息.在客户端,会提供一个JSON数据用于显示所有error/HTTP
+   status 详细信息.
+   浏览器会加载一个空的视图来渲染这些错误信息(你可以添加一个`view`来处理错误信息界面).
+2. 实现`ErrorController`来取代默认行为,或者简单地添加一个类型为`ErrorAttributes`的`bean`在沿用现有(错误提供)机制的基础上进行返回内容的更改。
+
+        `BasicErrorController`作为`ErrorController`的基础实现.如果要添加新内容类型(eg:text/json)的处理程序（会默认将其他内容类型处理为text/html），
+        只需要继承`BasicErrorController`并提供一个使用`@RequestMapping` that has a produces attribute
